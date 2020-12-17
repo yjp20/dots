@@ -1,0 +1,3 @@
+#!/bin/sh
+# pandoc -s --toc -f markdown -t html5 -o "$1.pdf" "$1" -c "${HOME}/dot/pandoc/pandoc.css" --template "${HOME}/dot/pandoc/template.html"
+pandoc --pdf-engine lualatex -s -f markdown -o ".$1.tex" "$1" -H "${HOME}/dot/pandoc/head.tex" && xelatex ".$1.tex" > /dev/null

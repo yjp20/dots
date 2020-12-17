@@ -1,0 +1,77 @@
+#!/bin/bash
+# Algorithm tool by Young Jin Park
+
+ALGO_FOLDER=$HOME/projects/algo
+
+RED='\033[1;31m'
+GREEN='\033[1;32m'
+NC='\033[0m'
+
+case $1 in
+  be)
+    cd "$ALGO_FOLDER"
+    cd $2 && vim $2.cpp
+    ;;
+
+  bn)
+    cd "$ALGO_FOLDER"
+    mkdir -p $2
+    cd $2
+
+    if [ -f $2.cpp ]; then
+      read "choice?! Already exists. Continue (y/N)?"
+      case "$choice" in
+        y|Y ) echo "proceeding...";;
+        * ) return;;
+      esac
+    fi
+
+    touch "$2".cpp
+    cat ~/dot/scripts/sampleb.cpp > "$2".cpp
+    python3 ~/projects/bojcli/bojget.py "$2"
+    vim "$2".cpp
+    ;;
+  bo)
+    cd "$ALGO_FOLDER"
+    mkdir -p "$2"
+    cd "$2"
+    ;;
+  bs)
+    python3 ~/projects/bojcli/bojcli.py "$2"
+    ;;
+  br)
+    case $3 in
+      cpp)
+        g++ $2
+        if [ -d in ]; then
+          for test in $(ls -1 in); do
+            name="${test%.*}"
+            out="$(timeout 3s ./a.out < "in/$name.in" | diff -y -b -Z -W 120 - "out/$name.out")"
+            if [ $? = 0 ]; then
+              echo -e $GREEN"●:${name}:right"$NC
+            else
+              echo -e $RED"●:${name}:wrong"$NC
+              echo -e "  yours                               |\tcorrect"
+              echo -e "  -------------------------------------------------------------------"
+              echo -e "$out" | sed "s/^/  /"
+            fi
+          done
+        elif [ -f in.txt ]; then
+          ./a.out < in.txt
+        else
+          ./a.out
+        fi
+        ;;
+    esac
+    ;;
+  bg)
+    python3 ~/projects/bojcli/bojget.py "$2"
+    ;;
+  n)
+    cp ~/dot/scripts/sampleb.cpp "$2"
+    ;;
+  *)
+    echo "Command not found"
+    ;;
+
+esac

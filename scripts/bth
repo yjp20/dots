@@ -1,0 +1,7 @@
+#!/bin/sh
+
+ADDR="70:26:05:CF:EC:0D"
+
+bluetoothctl power on &&
+bluetoothctl disconnect "$ADDR" &&
+bluetoothctl connect "$ADDR"

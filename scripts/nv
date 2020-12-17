@@ -1,0 +1,8 @@
+#!/bin/sh
+export XORGCONFIG="xorg.conf.egpu"
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/lib:/opt/lib32"
+
+$R="/opt/bin/nvidia-xconfig --query-gpu-info"
+
+sudo ldconfig /opt/lib
+xinit -- /usr/bin/X -config $XORGCONFIG

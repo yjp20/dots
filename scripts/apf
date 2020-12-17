@@ -1,0 +1,5 @@
+#!/bin/sh
+
+p1=`dirname $2`
+p2=`basename $2`
+mv $2 "${p1}/$1${p2}"

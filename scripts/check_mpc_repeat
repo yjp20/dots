@@ -1,0 +1,9 @@
+#!/bin/sh
+
+O="$(mpc | sed -n 's/.*repeat: \([a-z]\+\).*/\1/p')"
+
+if [ "$O" = "on" ]; then
+  echo "R"
+else
+  echo ""
+fi

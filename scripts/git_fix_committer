@@ -1,0 +1,20 @@
+#!/bin/bash
+
+CORRECT_NAME="Young Jin Park"
+CORRECT_EMAIL="youngjinpark20@gmail.com"
+
+git change-commits GIT_AUTHOR_NAME      "yourdoge" "$CORRECT_NAME"
+git change-commits GIT_COMMITTER_NAME   "yourdoge" "$CORRECT_NAME"
+git change-commits GIT_AUTHOR_NAME      "YourDoge" "$CORRECT_NAME"
+git change-commits GIT_COMMITTER_NAME   "YourDoge" "$CORRECT_NAME"
+git change-commits GIT_AUTHOR_NAME      "$CORRECT_EMAIL" "$CORRECT_NAME"
+git change-commits GIT_COMMITTER_NAME   "$CORRECT_EMAIL" "$CORRECT_NAME"
+
+git change-commits GIT_AUTHOR_EMAIL     "yourdogewow@gmail.com" "$CORRECT_EMAIL"
+git change-commits GIT_COMMITTER_EMAIL  "yourdogewow@gmail.com" "$CORRECT_EMAIL"
+git change-commits GIT_AUTHOR_EMAIL     "young-jin.park20@stu.siskorea.org" "$CORRECT_EMAIL"
+git change-commits GIT_COMMITTER_EMAIL  "young-jin.park20@stu.siskorea.org" "$CORRECT_EMAIL"
+git change-commits GIT_AUTHOR_EMAIL     "$CORRECT_NAME" "$CORRECT_EMAIL"
+git change-commits GIT_COMMITTER_EMAIL  "$CORRECT_NAME" "$CORRECT_EMAIL"
+git change-commits GIT_AUTHOR_EMAIL     "youngjin@kdn.ktguide.com" "$CORRECT_EMAIL"
+git change-commits GIT_COMMITTER_EMAIL  "youngjin@kdn.ktguide.com" "$CORRECT_EMAIL"

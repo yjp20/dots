@@ -1,0 +1,5 @@
+song_columns_list_format = "$L(9)[white]{l} (20)[red]{a} (30)[green]{b}$R(20)[cyan]{t}"
+playlist_display_mode = "classic" (classic/columns)
+song_list_format = "$(10)%4l $(11) %a$(8) - $(16)%t $R$(9)%20b"
+song_status_format = {{%a{ "%b"{ (%y)}} - }{%t}}|{%f}
+progressbar_look = "━┫━"

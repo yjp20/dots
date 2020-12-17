@@ -1,0 +1,170 @@
+# vim: fdm=marker
+exec launch_polybar
+
+# {{{ settings
+set $mod Mod4
+font xft:Terminus 12
+default_orientation auto
+floating_modifier $mod
+# }}}
+# {{{ gaps
+gaps inner 25
+gaps outer 5
+# }}}
+# {{{ border
+for_window [class="^.*"] border pixel 2
+new_window pixel 1
+# class                 border  backgr. text    indicator child_border
+client.focused          #fabd2f #285577 #ffffff #b8bb26   #fabd2f
+client.focused_inactive #d79921 #5f676a #ffffff #b8bb26   #775931
+client.unfocused        #333333 #222222 #888888 #292d2e   #333333
+client.urgent           #fb4934 #900000 #ffffff #900000   #fb4934
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #000000
+#}}}
+# {{{ resize
+mode "resize" {
+        bindsym h resize shrink width 10 px or 2 ppt
+        bindsym j resize grow height 10 px or 2 ppt
+        bindsym k resize shrink height 10 px or 2 ppt
+        bindsym l resize grow width 10 px or 2 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+bindsym $mod+z mode "resize"
+# }}}
+# # {{{ plasma
+
+for_window [class="plasmashell"] floating enable
+for_window [title="Desktop — Plasma"] kill, floating enable, border none
+
+# }}}
+
+##########################################
+# Keybindings
+##########################################
+
+# {{{ i3
+bindsym $mod+q kill
+bindsym $mod+F4 kill
+# }}}
+# {{{ gaps
+set $mode_gaps Toggle gaps: (1) on (2) off
+bindsym $mod+period mode "$mode_gaps"
+mode "$mode_gaps" {
+    bindsym 1 mode "default", gaps inner all set 25, gaps outer all set 5
+    bindsym 2 mode "default", gaps inner all set 1, gaps outer all set 1
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+# }}}
+# {{{ focus hotkey
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+# }}}
+# {{{ mpc hotkey
+bindsym $mod+Up exec mpc repeat && mpc single
+bindsym $mod+Left exec mpc prev
+bindsym $mod+Down exec mpc toggle
+bindsym $mod+Right exec mpc next
+bindsym XF86AudioNext exec mpc next
+bindsym XF86AudioPrev exec mpc prev
+bindsym XF86AudioPlay exec mpc toggle
+bindsym $mod+Prior exec mpc seek -00:00:10
+bindsym $mod+Next exec mpc seek +00:00:10
+# }}}
+# {{{ move window hotkey
+bindsym $mod+Shift+H move left
+bindsym $mod+Shift+J move down
+bindsym $mod+Shift+K move up
+bindsym $mod+Shift+L move right
+bindsym $mod+c split h
+bindsym $mod+v split v
+# }}}
+# {{{ layout hokey
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout default
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+# }}}
+# {{{ i3 hotkey
+bindsym $mod+Shift+C reload
+bindsym $mod+Shift+R restart
+bindsym $mod+Shift+e exit
+# }}}
+# {{{ audio hotkeys
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5% #increase sound volume
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5% #decrease sound volume
+bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle # mute sound
+# }}}
+# {{{ brightness hotkeys
+bindsym XF86MonBrightnessUp exec xbacklight +5 && notify-send Brightness "brightness: $(xbacklight)"
+bindsym XF86MonBrightnessDown exec xbacklight -5
+# }}}
+# {{{ screenshot hotkey
+bindsym Print exec scrot
+bindsym $mod+Print exec scrot -s
+# }}}
+# {{{ commands hotkey
+bindsym $mod+Return exec --no-startup-id urxvt
+bindsym $mod+Shift+Return exec urxvt -cd "`xcwd`"
+bindsym $mod+r exec --no-startup-id qutebrowser
+bindsym $mod+g exec rofi -theme ~/dot/rofi/theme.rasi -show calc -modi calc
+bindsym $mod+d exec rofi -theme ~/dot/rofi/theme.rasi -show run
+bindsym $mod+b exec rofi -theme ~/dot/rofi/theme.rasi -show mpd -modi mpd:~/projects/rofi-mpd-playlist/rofi-mpd-playlist.sh
+bindsym $mod+n exec toggle_lid_close
+bindsym $mod+x exec urxvt -e ranger
+bindsym $mod+t exec urxvt -e ncmpcpp
+# }}}
+
+##########################################
+# Workspaces
+##########################################
+
+# {{{ customize workspace name
+set $ws1 1:1 
+set $ws2 2:2 
+set $ws3 3:3 
+set $ws4 4:4 
+set $ws5 5:5 
+set $ws6 6:6 
+set $ws7 7:7 
+set $ws8 8:8 
+# }}}
+# {{{ switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+# }}}
+# {{{ move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+# }}}
+# {{{ move workspaces to outputs
+bindsym $mod+Ctrl+h move workspace to output left
+bindsym $mod+Ctrl+j move workspace to output down
+bindsym $mod+Ctrl+k move workspace to output up
+bindsym $mod+Ctrl+l move workspace to output right
+# }}}
+

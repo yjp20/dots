@@ -1,0 +1,95 @@
+#!/bin/bash
+
+case $1 in
+  rungt)
+    sudo qemu-system-x86_64 \
+      -drive format=raw,file=/home/youngjin/win.raw \
+      -enable-kvm \
+      -machine type=pc,accel=kvm,kernel_irqchip=on \
+      -m 8G \
+      -smp cores=2 \
+      -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
+      -global PIIX4_PM.disable_s3=1 \
+      -global PIIX4_PM.disable_s4=1 \
+      -boot order=c \
+      -cdrom /home/youngjin/Downloads/virtio-win-0.1.160.iso \
+      -net nic \
+      -net user,id=n0 \
+      -device vfio-pci,sysfsdev=/sys/devices/pci0000:00/0000:00:02.0/efa656b8-922e-46da-8c9d-7a3c20a6840d,x-igd-opregion=on,display=on \
+      -vga none \
+      -usb -device usb-tablet \
+      -display egl-headless -spice disable-ticketing,port=5910
+    ;;
+  runstable)
+    sudo qemu-system-x86_64 \
+      -drive format=raw,file=/home/youngjin/win.raw \
+      -enable-kvm \
+      -machine type=pc,accel=kvm,kernel_irqchip=on \
+      -m 8G \
+      -smp cores=2 \
+      -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
+      -global PIIX4_PM.disable_s3=1 \
+      -global PIIX4_PM.disable_s4=1 \
+      -boot order=c \
+      -cdrom /home/youngjin/Downloads/virtio-win-0.1.160.iso \
+      -net nic \
+      -net user,id=n0 \
+      -usb -device usb-tablet \
+      -display gtk,gl=on
+#      -device vfio-pci,sysfsdev=/sys/devices/pci0000:00/0000:00:02.0/efa656b8-922e-46da-8c9d-7a3c20a6840d,x-igd-opregion=on,display=on \
+    ;;
+  rungtk)
+    sudo qemu-system-x86_64 \
+      -drive format=raw,file=/home/youngjin/win.raw \
+      /home/youngjin/win.raw \
+      -enable-kvm \
+      -machine type=pc,accel=kvm,kernel_irqchip=on \
+      -m 8G \
+      -smp cores=2 \
+      -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
+      -global PIIX4_PM.disable_s3=1 \
+      -global PIIX4_PM.disable_s4=1 \
+      -boot order=c \
+      -cdrom /home/youngjin/Downloads/virtio-win-0.1.160.iso \
+      -net nic \
+      -net user,id=n0 \
+      -usb -device usb-tablet \
+      -display gtk,gl=on \
+      -device vfio-pci,sysfsdev=/sys/devices/pci0000:00/0000:00:02.0/efa656b8-922e-46da-8c9d-7a3c20a6840d,x-igd-opregion=on,display=on \
+    ;;
+  run)
+    sudo qemu-system-x86_64 \
+      -drive format=raw,file=/home/youngjin/win.raw \
+      -enable-kvm \
+      -machine type=pc,accel=kvm,kernel_irqchip=on \
+      -m 8G \
+      -smp cores=2 \
+      -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
+      -boot order=c \
+      -cdrom /home/youngjin/Downloads/virtio-win-0.1.160.iso \
+      -net nic \
+      -net user,id=n0 \
+      -usb -device usb-tablet \
+    ;;
+  view)
+    spicy -h localhost -p 5910
+    ;;
+  stop)
+    ;;
+  mount)
+    mkdir /home/youngjin/winmnt
+    sudo losetup /dev/loop0 /home/youngjin/win.raw
+    sudo kpartx -a /dev/loop0
+    sudo mount /dev/mapper/loop0p2 /home/youngjin/winmnt
+    ;;
+  unmount)
+    sudo umount /home/youngjin/winmnt
+    sudo kpartx -d /dev/loop0
+    sudo losetup -d /dev/loop0
+    rm /home/youngjin/winmnt
+    ;;
+  *)
+    echo "Command not found"
+    ;;
+esac
+

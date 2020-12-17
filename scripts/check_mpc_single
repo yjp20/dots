@@ -1,0 +1,9 @@
+#!/bin/sh
+
+O="$(mpc | sed -n 's/.*single: \([a-z]\+\).*/\1/p')"
+
+if [ "$O" = "on" ]; then
+  echo "S"
+else
+  echo ""
+fi
