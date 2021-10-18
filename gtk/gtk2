@@ -1,8 +1,0 @@
-gtk-theme-name = "Arc-Darker"
-gtk-icon-theme-name = "Papirus"
-style "font"
-{
-	font_name = "IBM Plex Sans"
-}
-widget_class "*" style "font"
-gtk-font-name = "IBM Plex Sans"

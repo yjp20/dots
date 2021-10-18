@@ -1,39 +1,37 @@
 " vim: fdm=marker
 set nocompatible
 
-" {{{ Vundle
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" {{{ plug
+call plug#begin('~/.vim/plugged')
 
-Plugin 'VundleVim/Vundle.vim'
+Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/vim-easy-align'
+Plug 'leafOfTree/vim-svelte-plugin'
+Plug 'lervag/vimtex'
+Plug 'morhetz/gruvbox'
+Plug 'neoclide/coc.nvim'
+Plug 'pangloss/vim-javascript'
+Plug 'scrooloose/nerdtree'
+Plug 'tmhedberg/SimpylFold'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-dispatch'
+Plug 'udalov/kotlin-vim'
+Plug 'vimwiki/vimwiki'
 
-Plugin 'fatih/vim-go'
-Plugin 'junegunn/fzf.vim'
-Plugin 'junegunn/goyo.vim'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'leafgarland/typescript-vim'
-Plugin 'lervag/vimtex'
-Plugin 'morhetz/gruvbox'
-Plugin 'pangloss/vim-javascript'
-Plugin 'scrooloose/nerdtree'
-Plugin 'tmhedberg/SimpylFold'
-Plugin 'tpope/vim-commentary'
-Plugin 'tpope/vim-dispatch'
-Plugin 'tpope/vim-fugitive'
-Plugin 'vim-syntastic/syntastic'
-Plugin 'vimwiki/vimwiki'
-Plugin 'ycm-core/YouCompleteMe'
-Plugin 'MaxMEllon/vim-jsx-pretty'
-
-call vundle#end()
-filetype plugin indent on
+call plug#end()
 syntax on
 " }}}
 
 let g:syntastic_python_python_exec = '/bin/python3'
-let g:gruvbox_italic=1
+let g:gruvbox_italic=0
+set modeline
+set modelines=5
+set backspace=indent,eol,start
 set background=dark
+set ruler
 set hlsearch     "highlights all search
 set breakindent  "smart wrap
 set shiftwidth=2 "2 spaces for civilized people
@@ -50,11 +48,36 @@ set listchars=tab:│-
 colorscheme gruvbox
 highlight Normal ctermbg=NONE
 autocmd BufRead,BufNewFile *.py set shiftwidth=4 tabstop=4 expandtab
+autocmd BufRead,BufNewFile *.java set shiftwidth=4 tabstop=4 expandtab
 autocmd BufRead,BufNewFile *.txt set spell spelllang=en_us
 autocmd BufRead,BufNewFile *.md set spell spelllang=en_us
 
+function Format()
+	if &ft =~ 'cpp'
+		return
+	endif
+	call CocAction('format')
+endfunction
+
+nmap <silent> gf :call Format()<CR>
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gr <Plug>(coc-definition)
+nmap <silent> gt <Plug>(coc-rename)
+nnoremap <silent> ff :call <SID>show_documentation()<CR>
+inoremap <silent><expr> <c-k> coc#refresh()
+
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
 " {{{ Folding
-autocmd FileType go setlocal fdm=syntax
 nnoremap <Space> za
 let anyfold_activate=1
 set foldnestmax=1
@@ -75,13 +98,16 @@ function FoldText()
 endfunction
 set foldtext=FoldText()
 hi Folded ctermfg=8 ctermbg=0
+autocmd FileType go :set fdm=syntax
+autocmd FileType javascript :set fdm=syntax
+
 " }}}
 " {{{ Indenting
 vmap > >gv
 vmap < <gv
 " }}}
 " {{{ FZF
-nnoremap <C-b> :Files<CR>
+nnoremap gg :Files<CR>
 nnoremap <C-g> :Lines<CR>
 nnoremap <C-n> :Buffers<CR>
 " }}}
@@ -123,7 +149,7 @@ nnoremap <C-p> "+p
 " }}}
 " {{{ Exec/compile commands
 autocmd FileType cpp nnoremap <f7> :!g++ -DDEBUG -DTESTER -fsanitize=undefined -fsanitize=address -O2 -g % && ./a.out<CR>
-autocmd FileType cpp nnoremap <f8> :!g++ -DDEBUG -fsanitize=undefined -fsanitize=address -O2 -g % && ./a.out<CR>
+autocmd FileType cpp nnoremap <f8> :!g++ -std=c++17 -DDEBUG -fsanitize=undefined -fsanitize=address -O2 -g % && ./a.out<CR>
 autocmd FileType cpp nnoremap <f9> :!cf-tool test <CR>
 autocmd FileType python nnoremap <f7> :!python3 % <CR>
 autocmd FileType javascript noremap <f7> :!npx eslint % <CR>
@@ -154,15 +180,6 @@ au FileType tex :NoMatchParen
 " }}}
 " {{{ VoidLinux
 autocmd! BufNewFile,BufRead,BufEnter template set noexpandtab
-" }}}
-" {{{ vim-go
-let g:go_fmt_experimental = 1
-autocmd BufRead,BufNewFile *.tmpl set ft=gohtmltmpl
-highlight htmlTagName ctermfg=9 cterm=bold
-highlight gotplAction ctermfg=11
-highlight gotplControl ctermfg=11 cterm=bold
-highlight htmlTag ctermfg=8
-highlight htmlEndTag ctermfg=8
 " }}}
 " {{{ WordCount
 function! WC()
