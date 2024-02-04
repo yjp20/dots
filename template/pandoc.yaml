@@ -1,0 +1,31 @@
+pdf-engine: xelatex
+variables:
+  documentclass: exam
+  geometry: margin=20mm
+  papersize: a4
+  fontfamily: newpxtext
+  mainfont: TeX Gyre Pagella
+  fontsize: 10pt
+  filter: pandoc-include
+  header-includes: |
+    \usepackage{adjustbox}
+    \usepackage{dsfont}
+    \newcommand*\diff{\mathop{}\!\mathrm{d}}
+    \renewcommand{\Pr}{\mathbb{P}}
+    \newcommand{\Ex}{\mathbb{E}}
+
+    \makeatletter
+    \def\fps@figure{!hbt}
+    \makeatother
+
+    \makeatletter
+    \def\@maketitle{%
+      \newpage
+      \null
+      \let \footnote \thanks
+      {\LARGE \bf \@title \par}%
+      {\large \@author \par}%
+      %{\large \@date}%
+      \par
+      \vskip 1.5em}
+    \makeatother

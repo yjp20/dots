@@ -1,0 +1,188 @@
+" vim: fdm=marker
+
+" {{{ plug
+call plug#begin('~/.vim/plugged')
+
+Plug 'kevinhwang91/promise-async'
+Plug 'yjp20/nvim-ufo'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter-context'
+Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'leafOfTree/vim-svelte-plugin'
+Plug 'neoclide/coc.nvim'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-fugitive'
+Plug 'liuchengxu/vista.vim'
+Plug 'morhetz/gruvbox'
+Plug 'ellisonleao/gruvbox.nvim'
+Plug 'antoinemadec/coc-fzf'
+Plug 'sindrets/diffview.nvim'
+
+call plug#end()
+syntax on
+" }}}
+" {{{ Appearance
+set modeline modelines=5
+set number                 "add line number
+set background=dark
+set ruler
+set breakindent            "smart wrap
+set linebreak
+set laststatus=2           "show status bar with file name
+set statusline=%f\ 
+set statusline+=%h%w%m%r%=
+set statusline+=%{coc#status()}%{get(b:,'coc_current_function','')}\ 
+set statusline+=%#User1#%{GitStatus()}
+set statusline+=\ %-10.(%l,%c%V%)
+set display+=lastline
+set list listchars=tab:│\ ,
+set cursorline
+set textwidth=110
+
+function GitStatus()
+	let str = substitute(fugitive#statusline(), '^\[Git(\(.\+\))\]',  '\1', '')
+	return ' '..substitute(str, '^\(.\{20\}\).\+', '\1...', '').' '
+endfunction
+" }}}
+" {{{ Editing behavior
+set backspace=indent,eol,start
+set shiftwidth=2 tabstop=2 noexpandtab      "2 spaces for civilized people
+set nospell                                 "remove spell check for all files (added later)
+set foldcolumn=0                            "disgusting looking fold column"
+set hlsearch ignorecase smartcase incsearch "better highlighting behavior
+set formatoptions-=t
+set updatetime=300
+set nobackup nowritebackup
+
+let mapleader=" "
+" }}}
+" {{{ Undo behavior
+if !isdirectory($HOME."/.vim")
+    call mkdir($HOME."/.vim", "", 0770)
+endif
+if !isdirectory($HOME."/.vim/undo-dir")
+    call mkdir($HOME."/.vim/undo-dir", "", 0700)
+endif
+set undofile undodir=~/.vim/undo/
+" }}}
+" {{{ Colorscheme
+let g:gruvbox_italic=0
+let g:gruvbox_termcolors=16
+colorscheme gruvbox
+hi User1 ctermfg=3 ctermbg=237
+highlight LineNr ctermfg=238
+highlight Normal ctermbg=NONE
+let g:rainbow_ctermfgs = [ '9', '11', '12', '13', ]
+" }}}
+" {{{ Filetype
+autocmd FileType python :set shiftwidth=4 tabstop=4 expandtab
+autocmd FileType go :set fdm=syntax
+autocmd FileType javascript :set fdm=syntax
+autocmd FileType typescript :set expandtab fdm=expr foldexpr=nvim_treesitter#foldexpr()
+
+autocmd BufRead,BufNewFile *.md set sw=3 ts=3 sts=3 spell spelllang=en_us filetype=markdown conceallevel=0 syntax=markdown
+" autocmd BufRead,BufNewFile *.md call rainbow#load([['{', '}'], ['\v(\s|[.,;:])\$', '\v\$(\s|[.,;:])'], ['\\begin{align\*}', '\\end{align\*}']], '"\v([\-+()&=]|\\[a-z]+)"')
+" }}}
+" {{{ LSP
+function Format()
+	if &ft =~ 'cpp'
+		return
+	endif
+	call CocAction('format')
+endfunction
+
+nmap <leader><leader> :call Format()<CR>
+nmap <leader>cl        <Plug>(coc-codelens-action)
+xmap <silent><leader>a <Plug>(coc-codeaction-selected)
+nmap <silent><leader>a <Plug>(coc-codeaction-selected)
+nmap <silent>[g        <Plug>(coc-diagnostic-prev)
+nmap <silent>]g        <Plug>(coc-diagnostic-next)
+nmap <silent>gd        <Plug>(coc-definition)
+nmap <silent>gy        <Plug>(coc-type-definition)
+nmap <silent>gr        <Plug>(coc-rename)
+nmap <silent>ge        <Plug>(coc-references)
+
+nnoremap <silent> <space>c       :<C-u>CocFzfList commands<CR>
+nnoremap gR           *:%s///gc<left><left><left>
+nnoremap <silent> ff  :call <SID>show_documentation()<CR>
+inoremap <silent><expr> <c-k> coc#refresh()
+nnoremap <Tab>        bb <c-^><cr>
+nnoremap <Leader>     f
+
+autocmd BufRead,BufNewFile *.md nnoremap gy :!zsh -c 'pd % -o %.tex --standalone && pdflatex %.tex'<CR>
+autocmd BufRead,BufNewFile *.cpp nnoremap g :!zsh -c "g % && ./a.out"<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+hi CocErrorHighlight cterm=bold,underline gui=underline
+" }}}
+" {{{ Diff colors
+highlight DiffAdd    cterm=bold ctermfg=none ctermbg=60
+highlight DiffDelete cterm=bold ctermfg=none ctermbg=95
+highlight DiffChange cterm=bold ctermfg=none ctermbg=60
+highlight DiffText   cterm=bold ctermfg=none ctermbg=66
+" }}}
+" {{{ Folding
+nnoremap <Tab> za
+set foldnestmax=1
+set foldlevel=99
+set foldtext=getline(v:foldstart)
+hi Folded ctermfg=7 ctermbg=233
+imap <C-F> <C-T>
+" }}}
+" {{{ Indenting
+vmap > >gv
+vmap < <gv
+" }}}
+" {{{ FZF
+command! -bang -nargs=* Rg
+    \ call fzf#vim#grep('rg -g !.git/ -uuu --ignore-file .gitignore -g !pnpm-lock.yaml --column --line-number --no-heading --color=always --smart-case -- '.fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
+command! -bang -nargs=* RG
+    \ call fzf#vim#grep2('rg -g !.git/ -uuu --ignore-file .gitignore -g !pnpm-lock.yaml --column --line-number --no-heading --color=always --smart-case -- ', <q-args>, fzf#vim#with_preview(), <bang>0)
+nnoremap <leader>f :Files<CR>
+nnoremap <leader>/ :Rg<CR>
+nnoremap <leader>? :RG<CR>
+nnoremap <leader> :Lines<CR>
+nnoremap <C-n> :Buffers<CR>
+" }}}
+" {{{ Tabs
+nnoremap <C-Left> :tabprevious<CR>
+nnoremap <C-Right> :tabnext<CR>
+nnoremap <C-j> :tabprevious<CR>
+nnoremap <C-k> :tabnext<CR>
+" }}}
+" {{{ Visual line moving
+nnoremap j gj
+vnoremap j gj
+nnoremap k gk
+vnoremap k gk
+" }}}
+" {{{ Alternative escape
+inoremap jj <ESC>
+" }}}
+" {{{ copy register
+nnoremap <f6> :%y+ <CR>
+vnoremap <C-c> "+y
+nnoremap <C-c> "+yy
+nnoremap <C-p> "+p
+" }}}
+" {{{ Trailing Whitespace phobia
+function CleanWhitespace()
+  %s/\s\+$//e
+endfunction
+highlight ExtraWhitespace ctermbg=red
+let ew=matchadd('ExtraWhitespace', '\s\+\%#\@<!$', -100)
+nnoremap <f4> :call CleanWhitespace() <CR>
+" }}}

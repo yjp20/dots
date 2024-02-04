@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+	echo "No arguments supplied"
+	exit 1
+fi
+
+scp "$1" ocf:tmp
+shift
+echo "lp tmp -o fit-to-page $@" | ssh ocf

@@ -1,0 +1,7 @@
+theme = "yj"
+
+[editor]
+  cursorline = true
+
+[keys.insert]
+  j = { j = "normal_mode" }

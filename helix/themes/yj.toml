@@ -1,0 +1,73 @@
+"attribute" = "light-cyan"
+"keyword" = { fg = "light-red" }
+"keyword.directive" = "red"
+"keyword.control" = "light-red"
+"keyword.function" = "light-cyan"
+"keyword.storage.type" = "light-cyan"
+"keyword.storage.modifier" = "light-cyan"
+"namespace" = "light-cyan"
+"punctuation" = "white"
+"punctuation.special" = "light-yellow"
+"operator" = "light-magenta"
+"special" = "magenta"
+"variable" = "white"
+"variable.builtin" = "light-orange"
+"variable.parameter" = "fg2"
+"variable.other.member" = "light-blue"
+"type" = "light-yellow"
+"type.builtin" = "light-yellow"
+"constructor" = { fg = "light-magenta", modifiers = ["bold"] }
+"function" = "fg1"
+"function.macro" = "light-cyan"
+"function.builtin" = "light-yellow"
+"comment" = { fg = "gray1", bg = "black", modifiers = []  }
+"constant" = { fg = "light-magenta" }
+"constant.builtin" = { fg = "light-magenta", modifiers = ["bold"] }
+"string" = "light-green"
+"constant.numeric" = "light-magenta"
+"constant.character.escape" = { fg = "fg2", modifiers = ["bold"] }
+"label" = "light-cyan"
+"module" = "light-cyan"
+
+"diff.plus" = "light-green"
+"diff.delta" = "light-orange"
+"diff.minus" = "light-red"
+
+"warning" = { fg = "light-orange", bg = "bg1" }
+"error" = { fg = "light-red", bg = "bg1" }
+"info" = { fg = "light-cyan", bg = "bg1" }
+"hint" = { fg = "light-blue", bg = "bg1" }
+
+"ui.cursorline" = { bg = "bg1" }
+"ui.background" = { bg = "black" }
+"ui.linenr" = { fg = "bg4" }
+"ui.linenr.selected" = { fg = "light-yellow" }
+"ui.statusline" = { fg = "fg1", bg = "bg2" }
+"ui.statusline.inactive" = { fg = "fg4", bg = "bg1" }
+"ui.popup" = { bg = "bg1" }
+"ui.window" = { bg = "bg1" }
+"ui.help" = { bg = "bg1", fg = "fg1" }
+"ui.text" = { fg = "fg1" }
+"ui.text.focus" = { fg = "fg1" }
+"ui.selection" = { bg = "bg3", modifiers = ["reversed"] }
+"ui.cursor.primary" = { fg="fg2", modifiers = ["reversed"] }
+"ui.cursor.match" = { modifiers = ["reversed"] }
+"ui.menu" = { fg = "fg1", bg = "bg2" }
+"ui.menu.selected" = { fg = "bg2", bg = "light-blue", modifiers = ["bold"] }
+
+"diagnostic" = { modifiers = ["underlined"] }
+
+[palette]
+bg1 = "#3c3836"
+bg2 = "#504945"
+bg3 = "#665c54"
+bg4 = "#7c6f64"
+
+fg0 = "#ffffff"
+fg1 = "#f4f0ec" # main foreground
+fg2 = "#a4a09c"
+fg3 = "#bdae93"
+fg4 = "#a89984" # gray0
+
+gray0 = "#a89984"
+gray1 = "#928374"

@@ -1,0 +1,102 @@
+source "$HOME/.vim/plugged/gruvbox/gruvbox_256palette.sh"
+eval $(dircolors ~/.dircolors)
+export EDITOR=vim
+
+fpath+=($HOME/.zsh/pure)
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+
+setopt appendhistory extendedglob nomatch
+unsetopt autocd beep
+bindkey -e
+
+zstyle :compinstall filename '/home/youngjin/.zshrc'
+autoload -U promptinit; promptinit
+autoload -Uz compinit
+compinit
+
+setopt MENU_COMPLETE				# Automatically highlight first element of completion menu
+setopt AUTO_LIST						# Automatically list choices on ambiguous completion.
+setopt COMPLETE_IN_WORD			# Complete from both ends of a word.
+
+zstyle ':completion:*' completer _extensions _complete _approximate
+
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' # case insensitive tab completion
+zstyle ':completion:*' special-dirs true
+
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' cache-path "$HOME/.config/zsh/.zcompcache"
+
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+zstyle :prompt:pure:git:stash show yes
+zstyle :prompt:pure:path color yellow
+
+prompt pure
+
+G="https://github.com/yjp20"
+
+source ~/dot/shell/alias.sh
+source ~/dot/shell/fzf-git.sh
+PATH+=:~/dot/scripts
+PATH+=:~/.go/bin
+PATH+=:~/.local/bin
+PATH+=:/opt/texlive/2022/bin/x86_64-linux
+export GOPATH=$HOME/.go
+
+export GTK_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+export QT_IM_MODULES=ibus
+
+export FZF_DEFAULT_COMMAND='fd --type f -H -E .git -E node_modules -E music -E sync/fonts -E go/ -E void-packages '
+. /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+. /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HISTORY_IGNORE="cd *|ls *"
+bindkey '^I'	 complete-word       # tab          | complete
+bindkey '^[[Z' autosuggest-accept  # shift + tab  | autosuggest
+
+_fzf_git_fzf() {
+	fzf-tmux -p80%,60% -- \
+		--layout=reverse --multi --height=80% --min-height=20 --border \
+		--border-label-pos=2 \
+		--color='header:italic:underline,label:blue' \
+		--preview-window='right,65%,border-left' \
+		--bind='ctrl-/:change-preview-window(down,50%,border-top|hidden|)' "$@"
+}
+
+fzf-git-files-changed() {
+	_fzf_git_check || return
+	FILES=$(git -c color.status=always status --short --no-branch
+	 git diff --pretty="" --name-only | grep -vxFf <(git status -s | grep '^[^?]' | cut -c4-; echo :) | sed 's/^/		/')
+	FILE=$(echo $FILES |
+	_fzf_git_fzf -m --ansi --nth 2..,.. \
+		--border-label '📁 Files' \
+		--header $'CTRL-O (open in editor), CTRL-E (open in delta) \n\n' \
+		--bind "ctrl-o:execute:${EDITOR:-vim} {-1} > /dev/tty" \
+		--bind 'ctrl-e:execute:git diff HEAD {-1} | delta --paging=always > /dev/tty' \
+		--preview 'git diff HEAD -- {-1} | delta --width ${FZF_PREVIEW_COLUMNS} --file-style=omit -- {-1} | sed 1d' "$@"
+	)
+}
+
+fzf-dist() {
+	LIST=$(ls ~/work/dist)
+	DIST=$(echo ${LIST} |
+		_fzf_git_fzf \
+			--border-label '📁 Dist repos' \
+			--bind "ctrl-o:execute:cd ~/work/dist/{-1} && ${EDITOR:-vim} > /dev/tty" \
+			--preview 'cd ~/work/dist && cd {-1} && git diff --color=always --stat HEAD' "$@"
+	)
+	cd ~/work/dist/$DIST
+	zle reset-prompt
+}
+
+zle -N fzf-dist
+zle -N fzf-git-files-changed
+
+bindkey '^o' fzf-dist
+bindkey '^g^m' fzf-git-files-changed
+bindkey '^gm' fzf-git-files-changed

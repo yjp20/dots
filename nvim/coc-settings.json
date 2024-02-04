@@ -1,0 +1,7 @@
+{
+  "python.analysis.diagnosticMode": "workspace",
+  "yaml.schemas": {
+    "./lib/config.schema.json": "specs/*.stainless.yml"
+  },
+  "svelte.enable-ts-plugin": true
+}

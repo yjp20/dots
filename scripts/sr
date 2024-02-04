@@ -1,4 +1,4 @@
 #!/bin/sh
 
-find . -not -path '*/\.git*' -type f -exec \
-    sed -i "$1" {} +
+fd . --type f --exec \
+    sed -i '' -e "$1" {} \;
